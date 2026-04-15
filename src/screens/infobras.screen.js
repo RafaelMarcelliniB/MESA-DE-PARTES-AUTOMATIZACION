@@ -55,17 +55,45 @@ class InfobrasScreen {
   async irADatosEjecucion() {
     const pageObjetivo = this.fichaPage || this.page;
 
-    // Se espera a que cargue la ficha y luego se navega al menú Datos de ejecución.
-    await pageObjetivo.getByText(locators.publicSheet.opcionesFichaPublica).first().waitFor({ state: "visible", timeout: 20000 });
+    await pageObjetivo.waitForLoadState("domcontentloaded").catch(() => {});
 
-    const linkDatosEjecucion = pageObjetivo.locator(locators.publicSheet.datosEjecucionHref).first();
-    if (await linkDatosEjecucion.isVisible().catch(() => false)) {
-      await linkDatosEjecucion.click();
-    } else {
-      await pageObjetivo.getByText(locators.publicSheet.datosEjecucionTexto).first().click();
+    const tituloDatosEjecucion = pageObjetivo
+      .getByText(locators.publicSheet.datosEjecucionTitulo)
+      .first();
+
+    if (await tituloDatosEjecucion.isVisible().catch(() => false)) {
+      return;
     }
 
-    await pageObjetivo.waitForLoadState("domcontentloaded").catch(() => {});
+    const linkDatosEjecucion = pageObjetivo.locator(locators.publicSheet.datosEjecucionHref).first();
+    const textoDatosEjecucion = pageObjetivo.getByText(locators.publicSheet.datosEjecucionTexto).first();
+
+    if (await linkDatosEjecucion.isVisible().catch(() => false)) {
+      await linkDatosEjecucion.click().catch(() => {});
+    } else if (await textoDatosEjecucion.isVisible().catch(() => false)) {
+      await textoDatosEjecucion.click().catch(() => {});
+    } else {
+      // Fallback: cuando no renderiza el menú lateral, navegar por URL directa con obraId.
+      const hrefDirecto = await pageObjetivo
+        .locator(locators.publicSheet.datosEjecucionHref)
+        .first()
+        .getAttribute("href")
+        .catch(() => null);
+
+      if (hrefDirecto) {
+        const urlDirecta = new URL(hrefDirecto, pageObjetivo.url()).toString();
+        await pageObjetivo.goto(urlDirecta, { waitUntil: "domcontentloaded" });
+      } else {
+        const matchObra = pageObjetivo.url().match(/[?&]obraId=(\d+)/i);
+        if (matchObra?.[1]) {
+          const urlDatosEjecucion = `https://infobras.contraloria.gob.pe/InfobrasWeb/Mapa/DatosEjecucion?obraId=${matchObra[1]}`;
+          await pageObjetivo.goto(urlDatosEjecucion, { waitUntil: "domcontentloaded" });
+        }
+      }
+    }
+
+    await pageObjetivo.waitForLoadState("networkidle").catch(() => {});
+    await tituloDatosEjecucion.waitFor({ state: "visible", timeout: 60000 });
   }
 
   async capturarDatosEjecucion(rutaArchivo) {

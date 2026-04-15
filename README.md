@@ -42,8 +42,10 @@ El archivo base es `src/input/codigos_infobras.csv`.
 ## Documentación
 
 - Guía de reporte de monitoreo (generada automáticamente al correr la feature): `docs/reporte-monitoreo.md`
-- Evidencias de capturas generadas por registro: `tests/evidencias/`
+- Evidencias de capturas completas por registro: `tests/evidencias/`
 - Informes PDF por obra con formato `codigo-informe.pdf`: `docs/informes/`
+
+Al ejecutar `npm run test:feature`, el flujo recorre cada código del CSV, toma las capturas completas de la ficha pública y genera automáticamente el PDF de informe en `docs/informes/`.
 
 ## Ejecución (Windows)
 
@@ -75,6 +77,8 @@ npm test
 ## Ejecución visible y pasos en consola
 
 Ahora el proyecto abre el navegador en modo visible por defecto y muestra cada paso de Cucumber en la terminal con prefijo ` [STEP] `.
+El retardo entre acciones (`SLOW_MO`) viene en `0` por defecto para evitar demoras innecesarias.
+El timeout global de Cucumber puede ajustarse con `CUCUMBER_TIMEOUT_MS` si el sitio responde lento.
 
 Comandos útiles:
 
@@ -87,6 +91,9 @@ $env:HEADED="false"; npm run test:feature
 
 # Visible y más lento para observar mejor
 $env:SLOW_MO="700"; npm run test:feature
+
+# Extender timeout global de Cucumber (ejemplo: 45 min)
+$env:CUCUMBER_TIMEOUT_MS="2700000"; npm run test:feature
 ```
 
 ## Troubleshooting

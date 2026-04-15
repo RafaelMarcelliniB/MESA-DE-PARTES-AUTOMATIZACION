@@ -54,6 +54,24 @@ async function imagenPngComoDataUri(rutaImagen) {
   return `data:image/png;base64,${contenido.toString("base64")}`;
 }
 
+async function leerDimensionesPng(rutaImagen) {
+  const contenido = await fs.readFile(rutaImagen);
+
+  // El bloque IHDR de PNG guarda ancho y alto (big-endian) en bytes 16-23.
+  if (contenido.length < 24) {
+    throw new Error(`No se pudo leer dimensiones PNG: ${rutaImagen}`);
+  }
+
+  const ancho = contenido.readUInt32BE(16);
+  const alto = contenido.readUInt32BE(20);
+
+  if (!ancho || !alto) {
+    throw new Error(`Dimensiones PNG invalidas: ${rutaImagen}`);
+  }
+
+  return { ancho, alto };
+}
+
 async function generarReporteMonitoreo(resultados, opciones = {}) {
   const cwd = process.cwd();
   const rutaDocs = path.join(cwd, "docs");
@@ -144,7 +162,7 @@ async function generarReporteMonitoreo(resultados, opciones = {}) {
   };
 }
 
-function htmlInforme({ codigo, entidad, cap1DataUri, cap2DataUri, fechaConsulta }) {
+function htmlInforme({ codigo, entidad, cap1DataUri, cap2DataUri, fechaConsulta, anchoContenidoPx }) {
   const tituloInforme = `${codigo} - INFOBRAS - Registro de avances mensuales (desactualizado)`;
 
   return `<!doctype html>
@@ -153,8 +171,9 @@ function htmlInforme({ codigo, entidad, cap1DataUri, cap2DataUri, fechaConsulta 
   <meta charset="utf-8" />
   <title>${escaparHtml(tituloInforme)}</title>
   <style>
-    @page { size: A4; margin: 16mm; }
-    body { font-family: Arial, sans-serif; color: #111; font-size: 12px; line-height: 1.35; }
+    @page { margin: 0; }
+    body { margin: 0; font-family: Arial, sans-serif; color: #111; font-size: 12px; line-height: 1.35; }
+    .documento { width: ${Math.max(900, Number(anchoContenidoPx) || 900)}px; padding: 28px; box-sizing: border-box; }
     h1, h2, h3 { margin: 0 0 8px; }
     h1 { font-size: 19px; text-transform: uppercase; letter-spacing: .2px; }
     h2 { font-size: 15px; margin-top: 18px; text-transform: uppercase; }
@@ -167,13 +186,14 @@ function htmlInforme({ codigo, entidad, cap1DataUri, cap2DataUri, fechaConsulta 
     .seccion { margin-top: 10px; }
     .nota { margin: 8px 0; }
     .ojo { margin: 8px 0; }
-    img { width: 100%; border: 1px solid #d6d6d6; border-radius: 4px; margin-top: 6px; }
+    img { width: 100%; height: auto; border: 1px solid #d6d6d6; border-radius: 4px; margin-top: 6px; }
     ul { margin: 6px 0 0 18px; }
     .fuente { margin-top: 6px; font-size: 11px; }
     .linea { height: 1px; background: #ddd; margin: 14px 0; }
   </style>
 </head>
 <body>
+  <div class="documento">
   <div class="portada">
     <div class="marca">INFORME</div>
     <div class="titulo">${escaparHtml(tituloInforme)}</div>
@@ -205,6 +225,7 @@ function htmlInforme({ codigo, entidad, cap1DataUri, cap2DataUri, fechaConsulta 
   <div class="ojo"><strong>Ojo:</strong> Abrir el boton <strong>Ver detalle</strong> y realizar la <strong>segunda captura de pantalla</strong> de la tabla.</div>
   <img src="${cap2DataUri}" alt="Captura avances de obra" />
   <div class="fuente">Fuente: https://infobras.contraloria.gob.pe/infobrasweb, consulta de fecha ${escaparHtml(fechaConsulta)}.</div>
+  </div>
 </body>
 </html>`;
 }
@@ -228,22 +249,25 @@ async function generarInformesPdf(resultados, opciones = {}) {
       const rutaPdf = path.join(rutaInformes, nombreInforme(codigo));
       const cap1DataUri = await imagenPngComoDataUri(cap1);
       const cap2DataUri = await imagenPngComoDataUri(cap2);
+      const dimCap1 = await leerDimensionesPng(cap1);
+      const dimCap2 = await leerDimensionesPng(cap2);
+      const anchoContenidoPx = Math.max(dimCap1.ancho, dimCap2.ancho, 900);
+      const altoDocumentoPx = 420 + dimCap1.alto + dimCap2.alto;
+      const anchoPdfPx = anchoContenidoPx + 56;
+      const altoPdfPx = altoDocumentoPx + 56;
 
       const page = await context.newPage();
-      await page.setContent(htmlInforme({ codigo, entidad, cap1DataUri, cap2DataUri, fechaConsulta }), {
+      await page.setViewportSize({ width: Math.max(anchoPdfPx, 1200), height: 900 });
+      await page.setContent(htmlInforme({ codigo, entidad, cap1DataUri, cap2DataUri, fechaConsulta, anchoContenidoPx }), {
         waitUntil: "networkidle"
       });
 
       await page.pdf({
         path: rutaPdf,
-        format: "A4",
+        width: `${anchoPdfPx}px`,
+        height: `${altoPdfPx}px`,
         printBackground: true,
-        margin: {
-          top: "16mm",
-          right: "12mm",
-          bottom: "16mm",
-          left: "12mm"
-        }
+        margin: { top: "0", right: "0", bottom: "0", left: "0" }
       });
 
       await page.close();

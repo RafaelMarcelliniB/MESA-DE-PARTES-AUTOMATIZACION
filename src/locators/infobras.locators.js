@@ -15,6 +15,7 @@ module.exports = {
     opcionesFichaPublica: /OPCIONES DE FICHA P[UÚ]BLICA/i,
     datosEjecucionTexto: /Datos de ejecuci[oó]n/i,
     datosEjecucionHref: 'a[href*="/Mapa/DatosEjecucion?obraId="]',
+    datosEjecucionTitulo: /DATOS\s+DE\s+EJECUCI[OÓ]N/i,
     avancesObraTitulo: /AVANCES\s+DE\s+OBRA/i,
     verDetalleButton: /Ver detalle/i
   }
