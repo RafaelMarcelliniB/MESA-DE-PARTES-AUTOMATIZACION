@@ -1,9 +1,18 @@
+const fs = require("fs/promises");
 const locators = require("../locators/infobras.locators");
 
 class InfobrasScreen {
   constructor(page) {
     this.page = page;
     this.fichaPage = null;
+  }
+
+  normalizarTexto(valor) {
+    return String(valor || "")
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .trim()
+      .toUpperCase();
   }
 
   async esperarAntesDeCaptura(pageObjetivo, esperaMs = 1500) {
@@ -27,6 +36,208 @@ class InfobrasScreen {
     // Espera hasta que la pantalla de búsqueda esté lista para digitar el código.
     await this.page.locator(locators.search.panelBusqueda).waitFor({ state: "visible", timeout: 20000 });
     await this.page.locator(locators.search.codigoInfobrasInput).waitFor({ state: "visible", timeout: 20000 });
+  }
+
+  async irAZonaBusquedaAvanzada() {
+    const linkBusqueda = this.page.locator(locators.home.buscaAhoraHref).first();
+    await linkBusqueda.waitFor({ state: "visible", timeout: 15000 });
+
+    await this.page.goto("https://infobras.contraloria.gob.pe/InfobrasWeb/Mapa/Index", {
+      waitUntil: "domcontentloaded"
+    });
+
+    await this.page.locator(locators.advancedSearch.searchSwitch).waitFor({ state: "visible", timeout: 20000 });
+  }
+
+  async activarBusquedaAvanzada() {
+    const switchBusqueda = this.page.locator(locators.advancedSearch.searchSwitch).first();
+    await switchBusqueda.waitFor({ state: "attached", timeout: 20000 });
+
+    if (!(await switchBusqueda.isChecked().catch(() => false))) {
+      await switchBusqueda.click();
+    }
+
+    await this.page.locator(locators.advancedSearch.departmentSelect).waitFor({ state: "attached", timeout: 20000 });
+  }
+
+  async seleccionarDepartamento(departamento) {
+    const departamentoNormalizado = this.normalizarTexto(departamento);
+    const selectorDepartamento = this.page.locator(locators.advancedSearch.departmentSelect).first();
+
+    await selectorDepartamento.waitFor({ state: "attached", timeout: 20000 });
+    await this.page.waitForFunction(
+      ({ selector, objetivo }) => {
+        const normalizar = (texto) => String(texto || "")
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "")
+          .trim()
+          .toUpperCase();
+
+        const select = document.querySelector(selector);
+        if (!select) {
+          return false;
+        }
+
+        const opciones = Array.from(select.options || []);
+        if (opciones.length < 2) {
+          return false;
+        }
+
+        return opciones.some((opcion) => normalizar(opcion.textContent) === objetivo);
+      },
+      { selector: locators.advancedSearch.departmentSelect, objetivo: departamentoNormalizado },
+      { timeout: 30000 }
+    );
+
+    const seleccionado = await selectorDepartamento.evaluate((elemento, valorObjetivo) => {
+      const normalizar = (texto) => String(texto || "")
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .trim()
+        .toUpperCase();
+
+      const option = Array.from(elemento.options).find((opcion) => normalizar(opcion.textContent) === valorObjetivo);
+
+      if (!option) {
+        return false;
+      }
+
+      elemento.value = option.value;
+      elemento.dispatchEvent(new Event("change", { bubbles: true }));
+      return true;
+    }, departamentoNormalizado);
+
+    if (!seleccionado) {
+      throw new Error(`No se encontró el departamento ${departamentoNormalizado}`);
+    }
+  }
+
+  async esperarDespuesDeSeleccionDepartamento(esperaMs = 1000) {
+    await this.page.waitForTimeout(esperaMs).catch(() => {});
+  }
+
+  async buscarCodigosPorDepartamento() {
+    const botonBuscar = this.page.locator(locators.advancedSearch.searchButton).first();
+    await botonBuscar.waitFor({ state: "visible", timeout: 20000 });
+    await botonBuscar.click();
+
+    await this.page.locator(locators.advancedSearch.exportCsvButton).waitFor({ state: "visible", timeout: 60000 });
+  }
+
+  async exportarCsvBusquedaAvanzada(rutaArchivo) {
+    const botonExportar = this.page.locator(locators.advancedSearch.exportCsvButton).first();
+    await botonExportar.waitFor({ state: "visible", timeout: 20000 });
+    await botonExportar.scrollIntoViewIfNeeded().catch(() => {});
+
+    await fs.rm(rutaArchivo, { force: true }).catch(() => {});
+
+    const obtenerDescarga = async (intento) => {
+      const descargaPromesa = this.page.waitForEvent("download", { timeout: 90000 }).catch(() => null);
+      await botonExportar.click({ force: true }).catch(async () => {
+        await botonExportar.evaluate((elemento) => elemento.click());
+      });
+      const descarga = await descargaPromesa;
+      if (!descarga && intento === 1) {
+        await this.page.waitForTimeout(1500).catch(() => {});
+      }
+      return descarga;
+    };
+
+    let descarga = await obtenerDescarga(1);
+    if (!descarga) {
+      descarga = await obtenerDescarga(2);
+    }
+
+    if (descarga) {
+      await descarga.saveAs(rutaArchivo);
+      const stat = await fs.stat(rutaArchivo).catch(() => null);
+      if (!stat || stat.size <= 0) {
+        throw new Error("La descarga CSV se detectó pero el archivo quedó vacío.");
+      }
+      return rutaArchivo;
+    }
+
+    // Fallback robusto para headless: reproducir la exportación en dos pasos por API.
+    const datosExportacion = await this.page.evaluate(() => {
+      if (typeof getSearchParamsForExport !== "function") {
+        return null;
+      }
+
+      const searchParams = getSearchParamsForExport();
+      const contextApp = typeof CONTEXT_APP === "string" ? CONTEXT_APP : "/InfobrasWeb";
+
+      return {
+        searchParams,
+        contextApp
+      };
+    }).catch(() => null);
+
+    if (datosExportacion?.searchParams) {
+      const { searchParams, contextApp } = datosExportacion;
+      const totalRecords = Number(searchParams.totalRecords || 0);
+      if (totalRecords <= 0) {
+        throw new Error("No hay resultados disponibles para exportar en CSV.");
+      }
+
+      const origin = new URL(this.page.url()).origin;
+      const actionUrl = `${origin}${contextApp}/Mapa/MapaEstadistico/ExportarExcelAvanzada`;
+      const paramNames = [
+        "nombre", "codigo", "valor", "desde", "hasta", "minimo", "maximo",
+        "nivel1", "nivel2", "nivel3", "controlSocial", "controlGubernamental", "tipoControl",
+        "marca", "departamento", "provincia", "distrito", "estado", "modalidadEjecucion"
+      ];
+
+      const form = {};
+      paramNames.forEach((nombre) => {
+        form[nombre] = String(searchParams[nombre] || "");
+      });
+      form.formato = "csv";
+
+      const generar = await this.page.context().request.post(actionUrl, {
+        form,
+        timeout: 180000
+      });
+
+      if (!generar.ok()) {
+        throw new Error(`Falló la generación de CSV (HTTP ${generar.status()}).`);
+      }
+
+      const data = await generar.json().catch(() => null);
+      if (!data?.success || !data?.fileName) {
+        throw new Error(data?.error || "El servidor no devolvió un archivo CSV para descargar.");
+      }
+
+      const urlDescarga = `${origin}${contextApp}/Mapa/MapaEstadistico/DescargarExport?doc=${encodeURIComponent(data.fileName)}`;
+      const respuesta = await this.page.context().request.get(urlDescarga, { timeout: 180000 });
+
+      if (!respuesta.ok()) {
+        throw new Error(`Falló la descarga del CSV pre-generado (HTTP ${respuesta.status()}).`);
+      }
+
+      const contenido = await respuesta.body();
+      if (!contenido || contenido.length === 0) {
+        throw new Error("La respuesta de exportación CSV llegó vacía.");
+      }
+
+      await fs.writeFile(rutaArchivo, contenido);
+      return rutaArchivo;
+    }
+
+    const href = await botonExportar.getAttribute("href").catch(() => null);
+    if (href && href !== "#") {
+      const urlDescarga = new URL(href, this.page.url()).toString();
+      const respuesta = await this.page.context().request.get(urlDescarga);
+      if (respuesta.ok()) {
+        const contenido = await respuesta.body();
+        if (!contenido || contenido.length === 0) {
+          throw new Error("La respuesta de exportación CSV llegó vacía.");
+        }
+        await fs.writeFile(rutaArchivo, contenido);
+        return rutaArchivo;
+      }
+    }
+
+    throw new Error("No se pudo descargar el CSV desde el botón Exportar.");
   }
 
   async buscarPorCodigoInfobras(codigoInfobras) {

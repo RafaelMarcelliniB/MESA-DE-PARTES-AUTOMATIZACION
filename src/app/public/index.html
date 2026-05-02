@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RPA Contaloria · Operaciones</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-left">
+      <h1>🏗️ RPA Contaloria</h1>
+      <p>Control de extracción, descarga masiva y revisión de obras desde CSV</p>
+    </div>
+    <div class="topbar-right">
+      <div class="dept-btn">
+        <select id="department-select"></select>
+        <span>▾</span>
+      </div>
+      <div class="filter-btn">
+        <select id="estado-filter">
+          <option value="todos">Todos los estados</option>
+          <option value="Ejecución">Ejecución</option>
+          <option value="Finalizado">Finalizado</option>
+          <option value="Paralizado">Paralizado</option>
+          <option value="Sin ejecución">Sin ejecución</option>
+        </select>
+        <span>▾</span>
+      </div>
+      <div class="date-pill">📅 <span id="fechaHoy"></span></div>
+      <a href="/dashboard.html" class="dashboard-link">Ver dashboard</a>
+    </div>
+  </header>
+
+  <main class="content">
+    <section class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-icon blue">📄</div>
+        <div class="kpi-info">
+          <label>Total de obras</label>
+          <span class="num blue" id="kpi-total-records">—</span>
+          <small>Registros del CSV seleccionado</small>
+        </div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-icon green">S/</div>
+        <div class="kpi-info">
+          <label>Monto total</label>
+          <span class="num green" id="kpi-total-monto">—</span>
+          <small>Suma del expediente técnico</small>
+        </div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-icon orange">∑</div>
+        <div class="kpi-info">
+          <label>Monto promedio</label>
+          <span class="num orange" id="kpi-promedio-monto">—</span>
+          <small>Promedio por obra</small>
+        </div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-icon blue">👁️</div>
+        <div class="kpi-info">
+          <label>Obras visibles</label>
+          <span class="num blue" id="kpi-visible-records">—</span>
+          <small>Según filtros activos</small>
+        </div>
+      </div>
+    </section>
+
+    <section class="charts-row">
+      <div class="panel">
+        <p class="panel-title">Extracción individual y reportes</p>
+        <form id="extract-form" class="control-form">
+          <label>
+            Salida CSV (opcional)
+            <input class="control-input" name="csvOutput" placeholder="tests/evidencias/extraccion-codigos/huanuco.csv" />
+          </label>
+          <label>
+            SlowMo (ms)
+            <input class="control-input" name="slowMo" type="number" min="0" value="300" />
+          </label>
+          <p class="panel-note">El departamento se toma del selector superior.</p>
+          <div class="actions">
+            <button type="submit" data-headed="false" class="btn-secondary">Ejecutar oculto</button>
+            <button type="submit" data-headed="true">Ejecutar visible</button>
+          </div>
+        </form>
+
+        <form id="report-form" class="control-form" style="margin-top: 18px;">
+          <label>
+            CSV de entrada
+            <input class="control-input" name="csvInput" value="src/input/codigos_infobras.csv" required />
+          </label>
+          <label>
+            SlowMo (ms)
+            <input class="control-input" name="slowMo" type="number" min="0" value="300" />
+          </label>
+          <div class="actions">
+            <button type="submit" data-headed="false" class="btn-secondary">Ejecutar oculto</button>
+            <button type="submit" data-headed="true">Ejecutar visible</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="panel">
+        <p class="panel-title">Extracción masiva</p>
+        <p class="panel-note">Descarga los 25 CSV en modo conservador, uno a uno, con pausa entre departamentos.</p>
+        <div class="actions">
+          <button id="btn-extract-all-hidden" type="button" class="btn-secondary">Descargar (oculto)</button>
+          <button id="btn-extract-all-visible" type="button">Descargar (visible)</button>
+        </div>
+        <div class="progress-shell" aria-hidden="true">
+          <div id="bulk-progress-fill" class="progress-fill" style="width: 0%"></div>
+        </div>
+        <p id="bulk-progress-text" class="progress-meta">Sin ejecución en curso</p>
+        <div id="bulk-status" class="status-box" hidden>
+          <strong>Estado extracción masiva:</strong>
+          <p id="bulk-status-text">—</p>
+        </div>
+      </div>
+
+      <div class="panel">
+        <p class="panel-title">Programación diaria</p>
+        <form id="schedule-form" class="control-form">
+          <label>
+            Hora (0-23)
+            <input class="control-input" id="schedule-hour" type="number" min="0" max="23" value="2" required />
+          </label>
+          <label>
+            Minuto (0-59)
+            <input class="control-input" id="schedule-minute" type="number" min="0" max="59" value="0" required />
+          </label>
+          <p class="panel-note">Se ejecutará todos los días a la hora indicada.</p>
+          <div class="actions">
+            <button type="submit" class="btn-secondary">Programar</button>
+            <button type="button" id="btn-check-schedule" class="btn-secondary">Ver estado</button>
+          </div>
+        </form>
+        <div id="schedule-status" class="status-box" hidden style="margin-top: 14px;">
+          <strong>Estado del scheduler:</strong>
+          <p id="schedule-status-text">—</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="bottom-row">
+      <div class="panel">
+        <div class="panel-head" style="display:flex; gap:12px; align-items:center; justify-content:space-between; flex-wrap:wrap;">
+          <p class="panel-title" style="margin-bottom:0;">Lista completa de obras extraídas</p>
+          <div class="table-toolbar">
+            <input id="search-input" class="control-input search-input" type="search" placeholder="Buscar obra, código o modalidad" />
+            <span class="dataset-pill" id="csv-file">-</span>
+          </div>
+        </div>
+        <p class="panel-note" id="data-status">Cargando datos...</p>
+        <div class="table-shell">
+          <table class="full-table record-table">
+            <thead>
+              <tr>
+                <th>Código INFOBRAS</th>
+                <th>CUI</th>
+                <th>Obra</th>
+                <th>Modalidad</th>
+                <th>Estado</th>
+                <th>Monto</th>
+              </tr>
+            </thead>
+            <tbody id="works-table-body"></tbody>
+          </table>
+        </div>
+        <p class="records-summary" id="works-count">0 registros</p>
+      </div>
+
+      <div class="panel log-panel">
+        <div class="log-head">
+          <h3>Log del proceso</h3>
+          <p id="job-meta">Sin ejecuciones activas</p>
+        </div>
+        <pre id="log-output">Esperando ejecucion...</pre>
+      </div>
+    </section>
+  </main>
+
+  <script src="/data/obras.js"></script>
+  <script src="/app.js"></script>
+</body>
+</html>

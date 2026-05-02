@@ -11,6 +11,12 @@ module.exports = {
     resultadosPanel: "#ID_Result",
     verFichaPublicaButton: '#ID_Result a[onclick^="verFicha"]'
   },
+  advancedSearch: {
+    searchSwitch: "#filter-type-search",
+    departmentSelect: "#ID_ADVANCED_Departamento",
+    searchButton: 'button[type="submit"][form="ID_FORM_ADVANCED"]',
+    exportCsvButton: "#btnExportCSV"
+  },
   publicSheet: {
     opcionesFichaPublica: /OPCIONES DE FICHA P[UÚ]BLICA/i,
     datosEjecucionTexto: /Datos de ejecuci[oó]n/i,
