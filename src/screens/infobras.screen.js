@@ -307,6 +307,46 @@ class InfobrasScreen {
     await tituloDatosEjecucion.waitFor({ state: "visible", timeout: 60000 });
   }
 
+  async extraerFechaUltimaActualizacion() {
+    const pageObjetivo = this.fichaPage || this.page;
+
+    await this.irADatosEjecucion().catch(() => {});
+
+    // Esperar carga y pequeños delays para que el DOM quede estable
+    await pageObjetivo.waitForLoadState("networkidle").catch(() => {});
+    await this.esperarAntesDeCaptura(pageObjetivo, 500).catch(() => {});
+
+    const html = await pageObjetivo.content().catch(() => "");
+    if (!html) return null;
+
+    // Buscar todas las ocurrencias de fechas en formato dd/mm/yyyy
+    const re = /\b(\d{1,2})\/(\d{1,2})\/(\d{4})\b/g;
+    const fechas = [];
+    let m;
+    while ((m = re.exec(html)) !== null) {
+      try {
+        const d = Number(m[1]);
+        const mo = Number(m[2]) - 1;
+        const y = Number(m[3]);
+        const dt = new Date(Date.UTC(y, mo, d));
+        if (!Number.isNaN(dt.getTime())) {
+          fechas.push(dt);
+        }
+      } catch (e) {
+        // ignorar
+      }
+    }
+
+    if (fechas.length === 0) {
+      return null;
+    }
+
+    // Tomar la fecha más reciente
+    fechas.sort((a, b) => b.getTime() - a.getTime());
+    const ultima = fechas[0];
+    return ultima.toISOString();
+  }
+
   async capturarDatosEjecucion(rutaArchivo) {
     const pageObjetivo = this.fichaPage || this.page;
     await this.esperarAntesDeCaptura(pageObjetivo);
