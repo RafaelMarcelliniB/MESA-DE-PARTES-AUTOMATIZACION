@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard Info Obras</title>
+
+  <!-- Fuentes -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <!-- Estilos -->
+  <link rel="stylesheet" href="css/styles.css" />
+
+</head>
+<body>
+
+  <!-- ── TOP BAR ───────────────────────────────────────────── -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <h1>🏗️ Dashboard Info Obras</h1>
+      <p>Panel de control de obras · Información general</p>
+    </div>
+    <div class="topbar-right">
+      <div class="dept-btn">
+        <select id="filtroDepartamento">
+          <option value="HUÁNUCO">Departamento</option>
+        </select>
+        <span>▾</span>
+      </div>
+      <div class="date-pill">
+        📅 <span id="fechaHoy"></span>
+      </div>
+      <div class="filter-btn">
+        <select id="filtroEstado">
+          <option value="todos">Todos los estados</option>
+          <option value="Ejecución">Ejecución</option>
+          <option value="Finalizado">Finalizado</option>
+          <option value="Paralizado">Paralizado</option>
+          <option value="Sin ejecución">Sin ejecución</option>
+        </select>
+        <span>▾</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="content">
+
+    <!-- ── KPI CARDS ─────────────────────────────────────────── -->
+    <section class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-icon blue">💼</div>
+        <div class="kpi-info">
+          <label>Ejecución</label>
+          <span class="num blue" id="kpi-ej">—</span>
+          <small>Obras en ejecución</small>
+        </div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-icon green">✅</div>
+        <div class="kpi-info">
+          <label>Finalizado</label>
+          <span class="num green" id="kpi-fin">—</span>
+          <small>Obras finalizadas</small>
+        </div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-icon orange">⏸️</div>
+        <div class="kpi-info">
+          <label>Paralizado</label>
+          <span class="num orange" id="kpi-par">—</span>
+          <small>Obras paralizadas</small>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── FILA DE GRÁFICAS ───────────────────────────────────── -->
+    <section class="charts-row">
+
+      <!-- Gráfico de dona -->
+      <div class="panel">
+        <p class="panel-title">Distribución por estado</p>
+        <div class="donut-layout">
+          <div class="canvas-wrap" style="width:140px; height:140px; flex-shrink:0;">
+            <canvas id="donutChart"></canvas>
+          </div>
+          <div class="donut-legend">
+            <div class="leg-row">
+              <div class="leg-dot" style="background:var(--blue)"></div>
+              <span class="leg-name">Ejecución</span>
+              <span class="leg-pct" id="pct-ej">—</span>
+            </div>
+            <div class="leg-row">
+              <div class="leg-dot" style="background:var(--pink)"></div>
+              <span class="leg-name">Finalizado</span>
+              <span class="leg-pct" id="pct-fin">—</span>
+            </div>
+            <div class="leg-row">
+              <div class="leg-dot" style="background:var(--orange)"></div>
+              <span class="leg-name">Paralizado</span>
+              <span class="leg-pct" id="pct-par">—</span>
+            </div>
+            <div class="leg-row">
+              <div class="leg-dot" style="background:var(--gray)"></div>
+              <span class="leg-name">Sin ejecución</span>
+              <span class="leg-pct" id="pct-sin">—</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Gráfico de barras por modalidad -->
+      <div class="panel">
+        <p class="panel-title">Obras por modalidad</p>
+        <div class="canvas-wrap" style="height:180px;">
+          <canvas id="barChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Mini tabla de resumen -->
+      <div class="panel">
+        <p class="panel-title">Resumen de obras</p>
+        <table class="summary-table">
+          <thead>
+            <tr>
+              <th>Obra</th>
+              <th>Región</th>
+              <th>Estado</th>
+              <th>Avance</th>
+            </tr>
+          </thead>
+          <tbody id="resumenBody"></tbody>
+        </table>
+      </div>
+
+    </section>
+
+    <!-- ── FILA INFERIOR ──────────────────────────────────────── -->
+    <section class="bottom-row">
+
+      <!-- Avance por modalidad -->
+      <div class="panel">
+        <p class="panel-title">Avance por modalidad</p>
+        <div class="region-list" id="regionList"></div>
+      </div>
+
+      <!-- Tabla completa de obras -->
+      <div class="panel">
+        <p class="panel-title">Obras recientes</p>
+        <div style="overflow-x: auto;">
+          <table class="full-table">
+            <thead>
+              <tr>
+                <th>Obra</th>
+                <th>Región</th>
+                <th>Estado</th>
+                <th>Avance</th>
+                <th>Fecha inicio</th>
+                <th>Presupuesto</th>
+              </tr>
+            </thead>
+            <tbody id="tablaBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- ── SCRIPTS ────────────────────────────────────────────── -->
+  <!-- Chart.js (CDN) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+  <!-- Datos referenciales -->
+  <script src="data/obras.js"></script>
+  <!-- Lógica de la app -->
+  <script src="js/app.js"></script>
+
+</body>
+</html>

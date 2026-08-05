@@ -1,0 +1,22 @@
+{
+  "name": "rpa-contaloria-infobras",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Base de RPA para INFOBRAS con Cucumber y JavaScript",
+  "type": "commonjs",
+  "scripts": {
+    "test": "cucumber-js",
+    "test:feature": "cucumber-js features/verificacion.feature --require src/support/**/*.js --require src/steps/**/*.js --publish-quiet",
+    "extract:codigos": "node src/run/extraccion-codigos.js",
+    "reportes": "node src/run/generar-reportes.js",
+    "verificar-documentacion": "node src/run/verificar-documentacion.js",
+    "app": "node src/app/server.js"
+  },
+  "devDependencies": {
+    "@cucumber/cucumber": "^11.0.0",
+    "playwright": "^1.52.0"
+  },
+  "dependencies": {
+    "node-cron": "^4.2.1"
+  }
+}
