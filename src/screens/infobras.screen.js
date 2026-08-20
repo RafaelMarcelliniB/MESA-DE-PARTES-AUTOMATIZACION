@@ -278,28 +278,21 @@ class InfobrasScreen {
 
     const linkDatosEjecucion = pageObjetivo.locator(locators.publicSheet.datosEjecucionHref).first();
     const textoDatosEjecucion = pageObjetivo.getByText(locators.publicSheet.datosEjecucionTexto).first();
+    const hrefDirecto = await linkDatosEjecucion.getAttribute("href").catch(() => null);
 
-    if (await linkDatosEjecucion.isVisible().catch(() => false)) {
-      await linkDatosEjecucion.click().catch(() => {});
+    if (hrefDirecto) {
+      const urlDirecta = new URL(hrefDirecto, pageObjetivo.url()).toString();
+      if (!/\/Mapa\/DatosEjecucion\?/i.test(pageObjetivo.url())) {
+        await pageObjetivo.goto(urlDirecta, { waitUntil: "domcontentloaded" });
+      }
     } else if (await textoDatosEjecucion.isVisible().catch(() => false)) {
       await textoDatosEjecucion.click().catch(() => {});
     } else {
       // Fallback: cuando no renderiza el menú lateral, navegar por URL directa con obraId.
-      const hrefDirecto = await pageObjetivo
-        .locator(locators.publicSheet.datosEjecucionHref)
-        .first()
-        .getAttribute("href")
-        .catch(() => null);
-
-      if (hrefDirecto) {
-        const urlDirecta = new URL(hrefDirecto, pageObjetivo.url()).toString();
-        await pageObjetivo.goto(urlDirecta, { waitUntil: "domcontentloaded" });
-      } else {
-        const matchObra = pageObjetivo.url().match(/[?&]obraId=(\d+)/i);
-        if (matchObra?.[1]) {
-          const urlDatosEjecucion = `https://infobras.contraloria.gob.pe/InfobrasWeb/Mapa/DatosEjecucion?obraId=${matchObra[1]}`;
-          await pageObjetivo.goto(urlDatosEjecucion, { waitUntil: "domcontentloaded" });
-        }
+      const matchObra = pageObjetivo.url().match(/[?&]obraId=(\d+)/i);
+      if (matchObra?.[1]) {
+        const urlDatosEjecucion = `https://infobras.contraloria.gob.pe/InfobrasWeb/Mapa/DatosEjecucion?obraId=${matchObra[1]}`;
+        await pageObjetivo.goto(urlDatosEjecucion, { waitUntil: "domcontentloaded" });
       }
     }
 

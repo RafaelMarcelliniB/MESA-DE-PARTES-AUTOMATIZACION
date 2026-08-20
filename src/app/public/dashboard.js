@@ -2,6 +2,28 @@ let allData = [];
 let filteredData = [];
 let currentSort = { field: null, asc: true };
 
+async function loadInformes() {
+  const status = document.getElementById("informes-status");
+  const list = document.getElementById("informes-list");
+
+  try {
+    const response = await fetch("/api/informes");
+    const result = await response.json();
+    if (!response.ok) {
+      throw new Error(result.error || "Error al cargar informes");
+    }
+
+    const informes = result.informes || [];
+    list.innerHTML = informes.length > 0
+      ? informes.map((informe) => `<p><strong>INFOBRAS ${informe.codigo}</strong> <a href="${informe.url}" target="_blank" rel="noopener">Abrir PDF</a></p>`).join("")
+      : "No hay informes PDF generados.";
+    status.textContent = `${informes.length} informe(s) disponible(s)`;
+  } catch (error) {
+    status.textContent = `Error: ${error.message}`;
+    list.textContent = "No se pudieron cargar los informes.";
+  }
+}
+
 async function loadData() {
   const loading = document.getElementById("loading");
   const content = document.getElementById("content");
@@ -204,6 +226,9 @@ function applySort() {
 
 // Event listeners
 document.addEventListener("DOMContentLoaded", () => {
+  loadInformes();
+  document.getElementById("btn-refresh-informes").addEventListener("click", loadInformes);
+
   // Search and filter listeners
   document.getElementById("search").addEventListener("input", applyFilters);
   document.getElementById("estado-filter").addEventListener("change", applyFilters);

@@ -491,6 +491,55 @@ async function requestHandler(req, res) {
     }
   }
 
+  if (req.method === "GET" && url.pathname === "/api/informes") {
+    try {
+      const rutaInformes = path.join(__dirname, "..", "..", "docs", "informes");
+      const archivos = await fs.readdir(rutaInformes).catch(() => []);
+      const informes = archivos
+        .filter((archivo) => /^\d+-informe\.pdf$/i.test(archivo))
+        .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }))
+        .map((archivo) => ({
+          archivo,
+          codigo: archivo.replace(/-informe\.pdf$/i, ""),
+          url: `/api/informes/descargar?archivo=${encodeURIComponent(archivo)}`
+        }));
+
+      sendJson(res, 200, { informes });
+      return;
+    } catch (error) {
+      sendJson(res, 500, { error: error.message, informes: [] });
+      return;
+    }
+  }
+
+  if (req.method === "GET" && url.pathname === "/api/informes/descargar") {
+    try {
+      const archivo = String(url.searchParams.get("archivo") || "").trim();
+      if (!/^\d+-informe\.pdf$/i.test(archivo)) {
+        sendJson(res, 400, { error: "Nombre de informe invalido" });
+        return;
+      }
+
+      const rutaPdf = path.join(__dirname, "..", "..", "docs", "informes", archivo);
+      const bufferPdf = await fs.readFile(rutaPdf).catch(() => null);
+      if (!bufferPdf) {
+        sendJson(res, 404, { error: "El informe no se encontro en el servidor" });
+        return;
+      }
+
+      res.writeHead(200, {
+        "Content-Type": "application/pdf",
+        "Content-Length": bufferPdf.length,
+        "Content-Disposition": `inline; filename="${archivo}"`
+      });
+      res.end(bufferPdf);
+      return;
+    } catch (error) {
+      sendJson(res, 500, { error: error.message });
+      return;
+    }
+  }
+
   if (req.method === "GET" && url.pathname === "/api/incumplimientos/descargar") {
     try {
       const codigo = String(url.searchParams.get("codigo") || "").trim();

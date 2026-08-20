@@ -18,7 +18,7 @@ Realizar la **primera captura de pantalla** en esta sección.
 
 ![Captura 1 - Datos de ejecución - 61867](../tests/evidencias/captura-01-datos-ejecucion-61867.png)
 
-Fuente: https://infobras.contraloria.gob.pe/infobrasweb, consulta de fecha Tue May 12 2026 22:25:06 GMT-0500 (hora estándar de Perú).
+Fuente: https://infobras.contraloria.gob.pe/infobrasweb, consulta de fecha Thu Aug 20 2026 01:12:53 GMT-0500 (hora estándar de Perú).
 
 ### PASO 2: Verificar el detalle de AVANCES DE OBRA
 
@@ -38,7 +38,7 @@ Abrir el botón **Ver detalle** y realizar la **segunda captura de pantalla** de
 
 ![Captura 2 - Avances de obra - 61867](../tests/evidencias/captura-02-avances-obra-61867.png)
 
-Fuente: https://infobras.contraloria.gob.pe/infobrasweb, consulta de fecha Tue May 12 2026 22:25:06 GMT-0500 (hora estándar de Perú).
+Fuente: https://infobras.contraloria.gob.pe/infobrasweb, consulta de fecha Thu Aug 20 2026 01:12:53 GMT-0500 (hora estándar de Perú).
 
 ---
 
@@ -58,7 +58,7 @@ Realizar la **primera captura de pantalla** en esta sección.
 
 ![Captura 1 - Datos de ejecución - 103632](../tests/evidencias/captura-01-datos-ejecucion-103632.png)
 
-Fuente: https://infobras.contraloria.gob.pe/infobrasweb, consulta de fecha Tue May 12 2026 22:25:06 GMT-0500 (hora estándar de Perú).
+Fuente: https://infobras.contraloria.gob.pe/infobrasweb, consulta de fecha Thu Aug 20 2026 01:12:53 GMT-0500 (hora estándar de Perú).
 
 ### PASO 2: Verificar el detalle de AVANCES DE OBRA
 
@@ -78,7 +78,7 @@ Abrir el botón **Ver detalle** y realizar la **segunda captura de pantalla** de
 
 ![Captura 2 - Avances de obra - 103632](../tests/evidencias/captura-02-avances-obra-103632.png)
 
-Fuente: https://infobras.contraloria.gob.pe/infobrasweb, consulta de fecha Tue May 12 2026 22:25:06 GMT-0500 (hora estándar de Perú).
+Fuente: https://infobras.contraloria.gob.pe/infobrasweb, consulta de fecha Thu Aug 20 2026 01:12:53 GMT-0500 (hora estándar de Perú).
 
 ---
 
@@ -98,7 +98,7 @@ Realizar la **primera captura de pantalla** en esta sección.
 
 ![Captura 1 - Datos de ejecución - 110466](../tests/evidencias/captura-01-datos-ejecucion-110466.png)
 
-Fuente: https://infobras.contraloria.gob.pe/infobrasweb, consulta de fecha Tue May 12 2026 22:25:06 GMT-0500 (hora estándar de Perú).
+Fuente: https://infobras.contraloria.gob.pe/infobrasweb, consulta de fecha Thu Aug 20 2026 01:12:53 GMT-0500 (hora estándar de Perú).
 
 ### PASO 2: Verificar el detalle de AVANCES DE OBRA
 
@@ -118,7 +118,7 @@ Abrir el botón **Ver detalle** y realizar la **segunda captura de pantalla** de
 
 ![Captura 2 - Avances de obra - 110466](../tests/evidencias/captura-02-avances-obra-110466.png)
 
-Fuente: https://infobras.contraloria.gob.pe/infobrasweb, consulta de fecha Tue May 12 2026 22:25:06 GMT-0500 (hora estándar de Perú).
+Fuente: https://infobras.contraloria.gob.pe/infobrasweb, consulta de fecha Thu Aug 20 2026 01:12:53 GMT-0500 (hora estándar de Perú).
 
 ---
 
@@ -138,7 +138,7 @@ Realizar la **primera captura de pantalla** en esta sección.
 
 ![Captura 1 - Datos de ejecución - 132479](../tests/evidencias/captura-01-datos-ejecucion-132479.png)
 
-Fuente: https://infobras.contraloria.gob.pe/infobrasweb, consulta de fecha Tue May 12 2026 22:25:06 GMT-0500 (hora estándar de Perú).
+Fuente: https://infobras.contraloria.gob.pe/infobrasweb, consulta de fecha Thu Aug 20 2026 01:12:53 GMT-0500 (hora estándar de Perú).
 
 ### PASO 2: Verificar el detalle de AVANCES DE OBRA
 
@@ -158,7 +158,7 @@ Abrir el botón **Ver detalle** y realizar la **segunda captura de pantalla** de
 
 ![Captura 2 - Avances de obra - 132479](../tests/evidencias/captura-02-avances-obra-132479.png)
 
-Fuente: https://infobras.contraloria.gob.pe/infobrasweb, consulta de fecha Tue May 12 2026 22:25:06 GMT-0500 (hora estándar de Perú).
+Fuente: https://infobras.contraloria.gob.pe/infobrasweb, consulta de fecha Thu Aug 20 2026 01:12:53 GMT-0500 (hora estándar de Perú).
 
 ---
 
@@ -178,7 +178,7 @@ Realizar la **primera captura de pantalla** en esta sección.
 
 ![Captura 1 - Datos de ejecución - 161112](../tests/evidencias/captura-01-datos-ejecucion-161112.png)
 
-Fuente: https://infobras.contraloria.gob.pe/infobrasweb, consulta de fecha Tue May 12 2026 22:25:06 GMT-0500 (hora estándar de Perú).
+Fuente: https://infobras.contraloria.gob.pe/infobrasweb, consulta de fecha Thu Aug 20 2026 01:12:53 GMT-0500 (hora estándar de Perú).
 
 ### PASO 2: Verificar el detalle de AVANCES DE OBRA
 
@@ -198,7 +198,7 @@ Abrir el botón **Ver detalle** y realizar la **segunda captura de pantalla** de
 
 ![Captura 2 - Avances de obra - 161112](../tests/evidencias/captura-02-avances-obra-161112.png)
 
-Fuente: https://infobras.contraloria.gob.pe/infobrasweb, consulta de fecha Tue May 12 2026 22:25:06 GMT-0500 (hora estándar de Perú).
+Fuente: https://infobras.contraloria.gob.pe/infobrasweb, consulta de fecha Thu Aug 20 2026 01:12:53 GMT-0500 (hora estándar de Perú).
 
 ---
 
@@ -218,7 +218,7 @@ Realizar la **primera captura de pantalla** en esta sección.
 
 ![Captura 1 - Datos de ejecución - 500865](../tests/evidencias/captura-01-datos-ejecucion-500865.png)
 
-Fuente: https://infobras.contraloria.gob.pe/infobrasweb, consulta de fecha Tue May 12 2026 22:25:06 GMT-0500 (hora estándar de Perú).
+Fuente: https://infobras.contraloria.gob.pe/infobrasweb, consulta de fecha Thu Aug 20 2026 01:12:53 GMT-0500 (hora estándar de Perú).
 
 ### PASO 2: Verificar el detalle de AVANCES DE OBRA
 
@@ -238,7 +238,7 @@ Abrir el botón **Ver detalle** y realizar la **segunda captura de pantalla** de
 
 ![Captura 2 - Avances de obra - 500865](../tests/evidencias/captura-02-avances-obra-500865.png)
 
-Fuente: https://infobras.contraloria.gob.pe/infobrasweb, consulta de fecha Tue May 12 2026 22:25:06 GMT-0500 (hora estándar de Perú).
+Fuente: https://infobras.contraloria.gob.pe/infobrasweb, consulta de fecha Thu Aug 20 2026 01:12:53 GMT-0500 (hora estándar de Perú).
 
 ---
 
@@ -258,7 +258,7 @@ Realizar la **primera captura de pantalla** en esta sección.
 
 ![Captura 1 - Datos de ejecución - 506766](../tests/evidencias/captura-01-datos-ejecucion-506766.png)
 
-Fuente: https://infobras.contraloria.gob.pe/infobrasweb, consulta de fecha Tue May 12 2026 22:25:06 GMT-0500 (hora estándar de Perú).
+Fuente: https://infobras.contraloria.gob.pe/infobrasweb, consulta de fecha Thu Aug 20 2026 01:12:53 GMT-0500 (hora estándar de Perú).
 
 ### PASO 2: Verificar el detalle de AVANCES DE OBRA
 
@@ -278,7 +278,7 @@ Abrir el botón **Ver detalle** y realizar la **segunda captura de pantalla** de
 
 ![Captura 2 - Avances de obra - 506766](../tests/evidencias/captura-02-avances-obra-506766.png)
 
-Fuente: https://infobras.contraloria.gob.pe/infobrasweb, consulta de fecha Tue May 12 2026 22:25:06 GMT-0500 (hora estándar de Perú).
+Fuente: https://infobras.contraloria.gob.pe/infobrasweb, consulta de fecha Thu Aug 20 2026 01:12:53 GMT-0500 (hora estándar de Perú).
 
 ---
 
@@ -298,7 +298,7 @@ Realizar la **primera captura de pantalla** en esta sección.
 
 ![Captura 1 - Datos de ejecución - 509919](../tests/evidencias/captura-01-datos-ejecucion-509919.png)
 
-Fuente: https://infobras.contraloria.gob.pe/infobrasweb, consulta de fecha Tue May 12 2026 22:25:06 GMT-0500 (hora estándar de Perú).
+Fuente: https://infobras.contraloria.gob.pe/infobrasweb, consulta de fecha Thu Aug 20 2026 01:12:53 GMT-0500 (hora estándar de Perú).
 
 ### PASO 2: Verificar el detalle de AVANCES DE OBRA
 
@@ -318,7 +318,7 @@ Abrir el botón **Ver detalle** y realizar la **segunda captura de pantalla** de
 
 ![Captura 2 - Avances de obra - 509919](../tests/evidencias/captura-02-avances-obra-509919.png)
 
-Fuente: https://infobras.contraloria.gob.pe/infobrasweb, consulta de fecha Tue May 12 2026 22:25:06 GMT-0500 (hora estándar de Perú).
+Fuente: https://infobras.contraloria.gob.pe/infobrasweb, consulta de fecha Thu Aug 20 2026 01:12:53 GMT-0500 (hora estándar de Perú).
 
 ---
 
@@ -338,7 +338,7 @@ Realizar la **primera captura de pantalla** en esta sección.
 
 ![Captura 1 - Datos de ejecución - 511773](../tests/evidencias/captura-01-datos-ejecucion-511773.png)
 
-Fuente: https://infobras.contraloria.gob.pe/infobrasweb, consulta de fecha Tue May 12 2026 22:25:06 GMT-0500 (hora estándar de Perú).
+Fuente: https://infobras.contraloria.gob.pe/infobrasweb, consulta de fecha Thu Aug 20 2026 01:12:53 GMT-0500 (hora estándar de Perú).
 
 ### PASO 2: Verificar el detalle de AVANCES DE OBRA
 
@@ -358,7 +358,7 @@ Abrir el botón **Ver detalle** y realizar la **segunda captura de pantalla** de
 
 ![Captura 2 - Avances de obra - 511773](../tests/evidencias/captura-02-avances-obra-511773.png)
 
-Fuente: https://infobras.contraloria.gob.pe/infobrasweb, consulta de fecha Tue May 12 2026 22:25:06 GMT-0500 (hora estándar de Perú).
+Fuente: https://infobras.contraloria.gob.pe/infobrasweb, consulta de fecha Thu Aug 20 2026 01:12:53 GMT-0500 (hora estándar de Perú).
 
 ---
 

@@ -29,6 +29,9 @@ const bulkStatus = document.getElementById("bulk-status");
 const bulkStatusText = document.getElementById("bulk-status-text");
 const scheduleStatus = document.getElementById("schedule-status");
 const scheduleStatusText = document.getElementById("schedule-status-text");
+const btnRefreshInformes = document.getElementById("btn-refresh-informes");
+const informesStatus = document.getElementById("informes-status");
+const informesList = document.getElementById("informes-list");
 
 const DEPARTAMENTOS_FALLBACK = [
   "AMAZONAS", "ANCASH", "APURÍMAC", "AREQUIPA", "AYACUCHO",
@@ -270,6 +273,32 @@ async function loadIncumplimientos(departamento) {
   }
 }
 
+function renderInformes(informes) {
+  if (!informes || informes.length === 0) {
+    informesList.innerHTML = "No hay informes PDF generados.";
+    return;
+  }
+
+  informesList.innerHTML = informes.map((informe) => `
+    <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; padding:8px 0; border-bottom:1px solid var(--line, #e5e7eb);">
+      <strong>INFOBRAS ${escapeHtml(informe.codigo)}</strong>
+      <a class="btn-secondary" href="${informe.url}" target="_blank" rel="noopener">Abrir PDF</a>
+    </div>
+  `).join("");
+}
+
+async function loadInformes() {
+  informesStatus.textContent = "Consultando informes generados...";
+  try {
+    const response = await fetchJson("/api/informes");
+    renderInformes(response.informes || []);
+    informesStatus.textContent = `${(response.informes || []).length} informe(s) disponible(s)`;
+  } catch (error) {
+    informesList.textContent = `Error al cargar informes: ${error.message}`;
+    informesStatus.textContent = "No se pudo consultar la carpeta de informes.";
+  }
+}
+
 function startPolling(jobId) {
   state.currentJobId = jobId;
   if (state.pollTimer) {
@@ -292,6 +321,9 @@ function startPolling(jobId) {
 
         if (job.type === "verificar-documentacion") {
           loadIncumplimientos(state.department);
+        }
+        if (job.type === "report") {
+          loadInformes();
         }
       }
     } catch (error) {
@@ -498,6 +530,7 @@ function attachEvents() {
   });
 
   btnRefreshIncumplimientos.addEventListener("click", () => loadIncumplimientos(state.department));
+  btnRefreshInformes.addEventListener("click", loadInformes);
 
   scheduleForm.addEventListener("submit", async (event) => {
     event.preventDefault();
@@ -547,6 +580,7 @@ function attachEvents() {
   attachEvents();
   await loadDepartmentData(state.department);
   await loadIncumplimientos(state.department);
+  await loadInformes();
   await refreshBulkStatus();
   await refreshScheduleStatus();
 

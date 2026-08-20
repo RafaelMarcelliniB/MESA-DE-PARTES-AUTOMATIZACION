@@ -173,6 +173,15 @@
     <section class="bottom-row">
       <div class="panel">
         <div class="panel-head" style="display:flex; gap:12px; align-items:center; justify-content:space-between; flex-wrap:wrap;">
+          <p class="panel-title" style="margin-bottom:0;">Informes PDF generados</p>
+          <button id="btn-refresh-informes" type="button" class="btn-secondary">Actualizar</button>
+        </div>
+        <p id="informes-status" class="panel-note">Aún no se han cargado los informes.</p>
+        <div id="informes-list" class="status-box">Cargando informes...</div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head" style="display:flex; gap:12px; align-items:center; justify-content:space-between; flex-wrap:wrap;">
           <p class="panel-title" style="margin-bottom:0;">Lista completa de obras extraídas</p>
           <div class="table-toolbar">
             <input id="search-input" class="control-input search-input" type="search" placeholder="Buscar obra, código o modalidad" />
