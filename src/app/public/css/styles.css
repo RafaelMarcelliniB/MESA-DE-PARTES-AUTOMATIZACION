@@ -11,27 +11,31 @@
 
 :root {
   /* Fondos */
-  --bg:          #0f1117;
-  --bg2:         #161b27;
-  --bg3:         #1e2436;
-  --border:      rgba(255, 255, 255, 0.07);
+  --bg:          #f2f3f5;
+  --bg2:         #ffffff;
+  --bg3:         #f7f8fa;
+  --border:      #d9dde3;
 
   /* Texto */
-  --text:        #e8eaf0;
-  --text2:       #8b90a0;
-  --text3:       #555c70;
+  --text:        #252a31;
+  --text2:       #626b76;
+  --text3:       #8a929c;
 
   /* Colores de estado */
-  --blue:        #3b82f6;
-  --blue-dim:    rgba(59, 130, 246, 0.15);
-  --green:       #22c55e;
-  --green-dim:   rgba(34, 197, 94, 0.15);
-  --orange:      #f97316;
-  --orange-dim:  rgba(249, 115, 22, 0.15);
-  --pink:        #ec4899;
-  --pink-dim:    rgba(236, 72, 153, 0.15);
-  --gray:        #64748b;
-  --gray-dim:    rgba(100, 116, 139, 0.15);
+  --blue:        #1769aa;
+  --blue-dim:    #e6f0f8;
+  --green:       #2f7d32;
+  --green-dim:   #e8f3e8;
+  --orange:      #b86b00;
+  --orange-dim:  #fff2dc;
+  --pink:        #a52a4a;
+  --pink-dim:    #f8e8ed;
+  --gray:        #66717d;
+  --gray-dim:    #eef0f2;
+
+  --brand-red:      #b30000;
+  --brand-red-dark: #8f0000;
+  --brand-red-dim:  #f8e6e6;
 
   /* Formas */
   --radius:      12px;
@@ -117,7 +121,7 @@ body {
   transition: background 0.2s;
 }
 
-.filter-btn:hover, .dept-btn:hover { background: #252d42; }
+.filter-btn:hover, .dept-btn:hover { background: var(--brand-red-dim); }
 
 .filter-btn select, .dept-btn select {
   background: transparent;
@@ -328,7 +332,7 @@ body {
   height: 100%;
   width: 0;
   border-radius: 999px;
-  background: linear-gradient(90deg, var(--blue), var(--green));
+  background: linear-gradient(90deg, var(--brand-red), #d94848);
   transition: width 0.3s ease;
 }
 
@@ -368,9 +372,9 @@ body {
   justify-content: center;
   padding: 8px 14px;
   border-radius: var(--radius-sm);
-  border: 1px solid rgba(59, 130, 246, 0.25);
-  background: rgba(59, 130, 246, 0.12);
-  color: var(--text);
+  border: 1px solid var(--brand-red);
+  background: var(--brand-red);
+  color: #ffffff;
   text-decoration: none;
   font-size: 13px;
   transition: transform 0.2s, background 0.2s;
@@ -378,7 +382,7 @@ body {
 
 .dashboard-link:hover {
   transform: translateY(-1px);
-  background: rgba(59, 130, 246, 0.18);
+  background: var(--brand-red-dark);
 }
 
 .log-panel {
@@ -562,10 +566,10 @@ body {
   font-weight: 600;
 }
 
-.pill.ej  { background: var(--blue-dim);   color: var(--blue);   border: 1px solid rgba(59,  130, 246, 0.3); }
-.pill.fin { background: var(--pink-dim);   color: var(--pink);   border: 1px solid rgba(236,  72, 153, 0.3); }
-.pill.par { background: var(--orange-dim); color: var(--orange); border: 1px solid rgba(249, 115,  22, 0.3); }
-.pill.sin { background: var(--gray-dim);   color: var(--gray);   border: 1px solid rgba(100, 116, 139, 0.3); }
+.pill.ej  { background: var(--blue-dim);   color: var(--blue);   border: 1px solid #a9c9e2; }
+.pill.fin { background: var(--brand-red-dim); color: var(--brand-red-dark); border: 1px solid #e2aaaa; }
+.pill.par { background: var(--orange-dim); color: var(--orange); border: 1px solid #e8c88e; }
+.pill.sin { background: var(--gray-dim);   color: var(--gray);   border: 1px solid #cbd1d8; }
 
 /* ── 10. ANIMACIONES ──────────────────────────────────────── */
 @keyframes fadeUp {
@@ -585,10 +589,10 @@ body {
 }
 
 .error-msg {
-  background: rgba(236, 72, 153, 0.15);
-  color: var(--pink);
+  background: var(--brand-red-dim);
+  color: var(--brand-red-dark);
   padding: 1rem;
   border-radius: var(--radius-sm);
-  border-left: 3px solid var(--pink);
+  border-left: 3px solid var(--brand-red);
   margin-bottom: 1rem;
 }
